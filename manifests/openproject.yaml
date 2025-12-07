@@ -20,6 +20,12 @@ spec:
         persistence:
           accessModes:
           - ReadWriteOnce
+        openproject:
+          useTmpVolumes: false
+        appInit:
+          resources:
+            limits:
+              memory: null
   destination:
     server: "https://kubernetes.default.svc"
     namespace: openproject
