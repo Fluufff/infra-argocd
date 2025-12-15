@@ -1,0 +1,31 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: vikunja
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/Fluufff/infra-argocd.git
+    targetRevision: next
+    path: vikunja
+    helm:
+      releaseName: vikunja
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: vikunja
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true
+  ignoreDifferences:
+  - group: apps
+    kind: Deployment
+    jsonPointers:
+    - /spec/replicas
+  - kind: Secret
+    jqPathExpressions:
+    - .data.user
+    - .data.pass
