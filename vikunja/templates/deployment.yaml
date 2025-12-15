@@ -57,6 +57,22 @@ spec:
             secretKeyRef:
               name: jwt
               key: secret
+        - name: VIKUNJA_AUTH_OPENID_ENABLED
+          value: "true"
+        - name: VIKUNJA_AUTH_OPENID_PROVIDERS_0_NAME
+          value: Google
+        - name: VIKUNJA_AUTH_OPENID_PROVIDERS_0_AUTHURL
+          value: https://accounts.google.com
+        - name: VIKUNJA_AUTH_OPENID_PROVIDERS_0_CLIENTID
+          valueFrom:
+            secretKeyRef:
+              name: google-auth
+              key: id
+        - name: VIKUNJA_AUTH_OPENID_PROVIDERS_0_CLIENTSECRET
+          valueFrom:
+            secretKeyRef:
+              name: google-auth
+              key: secret
         securityContext:
           {{- toYaml .Values.podSecurityContext | nindent 10 }}
         volumeMounts:
