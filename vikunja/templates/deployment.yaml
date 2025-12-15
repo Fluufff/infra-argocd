@@ -35,6 +35,9 @@ spec:
         secret:
           secretName: jwt
           defaultMode: 0440
+      - name: data
+        persistentVolumeClaim:
+          claimName: data
       containers:
       - name: vikunja
         image: {{ .Values.images.vikunja }}
