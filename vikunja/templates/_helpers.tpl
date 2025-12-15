@@ -3,7 +3,6 @@ Common labels
 */}}
 {{- define "vikunja.commonLabels" -}}
 helm.sh/chart: {{ .Chart.Name }}
-{{ include "application.labels" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
