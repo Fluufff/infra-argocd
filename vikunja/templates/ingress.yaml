@@ -13,3 +13,4 @@ spec:
     services:
     - kind: Service
       name: vikunja
+      namespace: {{ .Release.namespace }}
