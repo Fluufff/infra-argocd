@@ -1,0 +1,15 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  labels:
+    {{- include "vikunja.commonLabels" . | nindent 4 }}
+  name: https
+spec:
+  entryPoints:
+  - websecure
+  routes:
+  - kind: Rule
+    match: Host(`vikunja.next.fluufff.org`)
+    services:
+    - kind: Service
+      name: vikunja
