@@ -93,4 +93,4 @@ spec:
           mountPath: /app/vikunja/files
           readOnly: true
         resources:
-          {{- include "vikunja.resources" .Values.resources.evaluator_xray | nindent 10 }}
+          {{- include "vikunja.resources" .Values.resources.vikunja | nindent 10 }}
