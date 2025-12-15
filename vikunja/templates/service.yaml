@@ -3,7 +3,6 @@ kind: Service
 metadata:
   labels:
     {{- include "vikunja.commonLabels" . | nindent 4 }}
-    app.kubernetes.io/name: vikunja
     app.kubernetes.io/component: vikunja
   name: vikunja
 spec:

@@ -3,7 +3,7 @@ kind: IngressRoute
 metadata:
   labels:
     {{- include "vikunja.commonLabels" . | nindent 4 }}
-  name: https
+  name: vikunja
 spec:
   entryPoints:
   - websecure
