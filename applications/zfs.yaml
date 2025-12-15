@@ -1,0 +1,8 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: zfs-local
+provisioner: zfs.csi.openebs.io
+parameters:
+  fstype: "zfs"
+  poolname: "zroot/data/k8s-pv"
