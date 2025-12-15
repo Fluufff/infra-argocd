@@ -28,5 +28,4 @@ spec:
     - /spec/replicas
   - kind: Secret
     jqPathExpressions:
-    - .data.user
-    - .data.pass
+    - .data
