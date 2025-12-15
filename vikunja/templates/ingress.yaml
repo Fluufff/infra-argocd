@@ -13,4 +13,5 @@ spec:
     services:
     - kind: Service
       name: vikunja
+      port: 80
       namespace: {{ .Release.namespace }}
