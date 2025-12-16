@@ -20,7 +20,7 @@ spec:
         persistence:
           accessModes:
           - ReadWriteOnce
-          storageClassName: zfs-local
+          storageClassName: zfs-local-shared
         openproject:
           useTmpVolumes: false
         appInit:
