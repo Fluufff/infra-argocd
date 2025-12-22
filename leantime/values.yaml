@@ -1,0 +1,39 @@
+images:
+  leantime: docker.io/leantime/leantime:3.5.12
+  mysql: docker.io/myqsl:9.5.0
+
+resources:
+  mysql:
+    # startup peak: 0.09
+    # peak: 0.015
+    cpu: 10m
+    # peak: 134M
+    memory: 300Mi
+  leantime:
+    cpu: 100m
+    memory: 1Gi
+
+securityContext:
+  mysql:
+    runAsNonRoot: true
+    privileged: false
+    allowPrivilegeEscalation: false
+    readOnlyRootFilesystem: true
+    seccompProfile:
+      type: RuntimeDefault
+    capabilities:
+      drop: ["ALL"]
+  leantime:
+    runAsNonRoot: true
+    privileged: false
+    allowPrivilegeEscalation: false
+    readOnlyRootFilesystem: true
+    seccompProfile:
+      type: RuntimeDefault
+    capabilities:
+      drop: ["ALL"]
+      add:
+      - CHOWN
+      - SETGID
+      - SETUID
+

@@ -1,0 +1,114 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    {{- include "leantime.commonLabels" . | nindent 4 }}
+    app.kubernetes.io/name: leantime
+    app.kubernetes.io/component: mysql
+  name: mysql
+spec:
+  replicas: 1
+  revisionHistoryLimit: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: leantime
+      app.kubernetes.io/component: mysql
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app.kubernetes.io/name: leantime
+        app.kubernetes.io/component: mysql
+    spec:
+      volumes:
+      - name: mysql-admin
+        secret:
+          secretName: mysql-admin
+          defaultMode: 0440
+      - name: mysql-user
+        secret:
+          secretName: mysql-admin
+          defaultMode: 0440
+      - name: mysql-data
+        persistentVolumeClaim:
+          claimName: mysql-data
+      - name: tmp
+        emptyDir: {}
+      - name: run
+        emptyDir: {}
+      hostPID: false
+      hostIPC: false
+      automountServiceAccountToken: false
+      hostNetwork: false
+      containers:
+      - name: mysql
+        image: {{ .Values.images.mysql }}
+        volumeMounts:
+        - name: mysql-admin
+          mountPath: /etc/secrets/mysql-admin
+          readOnly: true
+        - name: mysql-user
+          mountPath: /etc/secrets/mysql-user
+          readOnly: true
+        - name: mysql-data
+          mountPath: /var/lib/mysql
+          readOnly: false
+        - name: tmp
+          mountPath: /tmp
+          readOnly: false
+        - name: run
+          mountPath: /var/run/mysql
+          readOnly: false
+        env:
+        - name: MYSQL_USER_FILE
+          value: /etc/secrets/mysql-user/user
+        - name: MYSQL_PASSWORD_FILE
+          value: /etc/secrets/mysql-user/pass
+        - name: MYSQL_ROOT_PASSWORD_FILE
+          value: /etc/secrets/mysql-admin/pass
+        - name: MYSQL_DATABASE
+          value: leantime 
+        securityContext:
+          {{- toYaml .Values.podSecurityContext.mysql | nindent 10 }}
+        resources:
+          {{- include "leantime.resources" .Values.resources.mysql | nindent 10 }}
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: "mysql-admin"
+type: Opaque
+data:
+  pass: {{ randAlphaNum 32 | b64enc | quote }}
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: "mysql-user"
+type: Opaque
+data:
+  user: {{ randAlphaNum 32 | b64enc | quote }}
+  pass: {{ randAlphaNum 32 | b64enc | quote }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    {{- include "leantime.commonLabels" . | nindent 4 }}
+    app.kubernetes.io/name: leantime
+    app.kubernetes.io/component: mysql
+  name: mysql
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: leantime
+    app.kubernetes.io/component: mysql
+  ports:
+  - name: sql
+    port: 3306
+    protocol: TCP
+    targetPort: 3306

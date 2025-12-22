@@ -1,0 +1,16 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  labels:
+    {{- include "leantime.commonLabels" . | nindent 4 }}
+  name: leantime
+spec:
+  entryPoints:
+  - websecure
+  routes:
+  - kind: Rule
+    match: Host(`leantime.next.fluufff.org`)
+    services:
+    - kind: Service
+      name: leantime
+      port: 80
