@@ -81,7 +81,7 @@ spec:
         volumeMounts:
         - name: data
           mountPath: /app/vikunja/files
-          readOnly: true
+          readOnly: false
         - name: config
           mountPath: /etc/vikunja
           readOnly: true
