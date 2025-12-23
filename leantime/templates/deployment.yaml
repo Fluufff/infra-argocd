@@ -40,8 +40,6 @@ spec:
           claimName: public-userfiles
       - name: tmp
         emptyDir: {}
-      - name: cache
-        emptyDir: {}
       containers:
       - name: leantime
         image: {{ .Values.images.leantime }}
@@ -96,9 +94,6 @@ spec:
           readOnly: false
         - name: tmp
           mountPath: /tmp
-          readOnly: false
-        - name: cache
-          mountPath: /var/www/html/bootstrap/cache
           readOnly: false
         resources:
           {{- include "leantime.resources" .Values.resources.leantime | nindent 10 }}
