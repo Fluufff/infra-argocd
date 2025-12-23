@@ -21,8 +21,8 @@ podSecurityContext:
     readOnlyRootFilesystem: true
     seccompProfile:
       type: RuntimeDefault
-    capabilities:
-      drop: ["ALL"]
+    # capabilities:
+    #   drop: ["ALL"]
   leantime:
     runAsNonRoot: true
     runAsUser: 1000
