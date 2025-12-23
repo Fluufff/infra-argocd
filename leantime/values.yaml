@@ -15,7 +15,7 @@ resources:
 
 podSecurityContext:
   mysql:
-    runAsNonRoot: true
+    # runAsNonRoot: true
     privileged: false
     allowPrivilegeEscalation: false
     readOnlyRootFilesystem: true
