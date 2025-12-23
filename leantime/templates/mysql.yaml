@@ -30,7 +30,7 @@ spec:
           defaultMode: 0440
       - name: mysql-user
         secret:
-          secretName: mysql-admin
+          secretName: mysql-user
           defaultMode: 0440
       - name: mysql-data
         persistentVolumeClaim:
