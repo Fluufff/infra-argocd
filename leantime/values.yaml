@@ -8,7 +8,7 @@ resources:
     # peak: 0.015
     cpu: 10m
     # peak: 134M
-    memory: 300Mi
+    memory: 1Gi
   leantime:
     cpu: 100m
     memory: 1Gi
