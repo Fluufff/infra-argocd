@@ -35,9 +35,9 @@ spec:
       - name: userfiles
         persistentVolumeClaim:
           claimName: userfiles
-      - name: public_userfiles
+      - name: public-userfiles
         persistentVolumeClaim:
-          claimName: public_userfiles
+          claimName: public-userfiles
       containers:
       - name: leantime
         image: {{ .Values.images.leantime }}
@@ -87,7 +87,7 @@ spec:
         - name: userfiles
           mountPath: /var/www/html/userfiles
           readOnly: false
-        - name: public_userfiles
+        - name: public-userfiles
           mountPath: /var/www/html/public/userfiles
           readOnly: false
         resources:
