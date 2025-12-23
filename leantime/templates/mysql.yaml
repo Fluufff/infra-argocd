@@ -60,7 +60,7 @@ spec:
           mountPath: /tmp
           readOnly: false
         - name: run
-          mountPath: /var/run/mysql
+          mountPath: /var/run/mysqld
           readOnly: false
         env:
         - name: MYSQL_USER_FILE
