@@ -76,7 +76,21 @@ spec:
         - name: LEAN_SESSION_EXPIRATION
           value: '28800'
         - name: LEAN_SESSION_SECURE
-          value: 'false'
+          value: 'true'
+        - name: LEAN_OIDC_ENABLE
+          value: 'true'
+        - name: LEAN_OIDC_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              name: google-auth
+              key: id
+        - name: LEAN_OIDC_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: google-auth
+              key: secret
+        - name: LEAN_OIDC_CREATE_USER
+          value: 'true'
         securityContext:
           {{- toYaml .Values.podSecurityContext.leantime | nindent 10 }}
         volumeMounts:
