@@ -38,6 +38,8 @@ spec:
       - name: public-userfiles
         persistentVolumeClaim:
           claimName: public-userfiles
+      - name: tmp
+        emptyDir: {}
       containers:
       - name: leantime
         image: {{ .Values.images.leantime }}
@@ -89,6 +91,9 @@ spec:
           readOnly: false
         - name: public-userfiles
           mountPath: /var/www/html/public/userfiles
+          readOnly: false
+        - name: tmp
+          mountPath: /tmp
           readOnly: false
         resources:
           {{- include "leantime.resources" .Values.resources.leantime | nindent 10 }}
