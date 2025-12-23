@@ -1,0 +1,63 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: plugins
+  labels:
+    {{- include "leantime.commonLabels" . | nindent 4 }}
+    app.kubernetes.io/name: leantime
+    app.kubernetes.io/component: leantime
+spec:
+  storageClassName: zfs-local
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: userfiles
+  labels:
+    {{- include "leantime.commonLabels" . | nindent 4 }}
+    app.kubernetes.io/name: leantime
+    app.kubernetes.io/component: leantime
+spec:
+  storageClassName: zfs-local
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: public-userfiles
+  labels:
+    {{- include "leantime.commonLabels" . | nindent 4 }}
+    app.kubernetes.io/name: leantime
+    app.kubernetes.io/component: leantime
+spec:
+  storageClassName: zfs-local
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mysql-data
+  labels:
+    {{- include "leantime.commonLabels" . | nindent 4 }}
+    app.kubernetes.io/name: leantime
+    app.kubernetes.io/component: mysql
+spec:
+  storageClassName: zfs-local
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
