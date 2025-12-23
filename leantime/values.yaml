@@ -13,7 +13,7 @@ resources:
     cpu: 100m
     memory: 1Gi
 
-securityContext:
+podSecurityContext:
   mysql:
     runAsNonRoot: true
     privileged: false
@@ -36,4 +36,3 @@ securityContext:
       - CHOWN
       - SETGID
       - SETUID
-
