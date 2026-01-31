@@ -40,6 +40,8 @@ spec:
           claimName: public-userfiles
       - name: tmp
         emptyDir: {}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext.leantime | nindent 8 }}
       containers:
       - name: leantime
         image: {{ .Values.images.leantime }}
@@ -94,7 +96,7 @@ spec:
         - name: LEAN_OIDC_CREATE_USER
           value: 'true'
         securityContext:
-          {{- toYaml .Values.podSecurityContext.leantime | nindent 10 }}
+          {{- toYaml .Values.securityContext.leantime | nindent 10 }}
         volumeMounts:
         - name: logs
           mountPath: /var/www/html/storage/logs

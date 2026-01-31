@@ -43,6 +43,8 @@ spec:
       hostIPC: false
       automountServiceAccountToken: false
       hostNetwork: false
+      securityContext:
+        {{- toYaml .Values.podSecurityContext.leantime | nindent 8 }}
       containers:
       - name: mysql
         image: {{ .Values.images.mysql }}
@@ -72,7 +74,7 @@ spec:
         - name: MYSQL_DATABASE
           value: leantime 
         securityContext:
-          {{- toYaml .Values.podSecurityContext.mysql | nindent 10 }}
+          {{- toYaml .Values.securityContext.mysql | nindent 10 }}
         resources:
           {{- include "leantime.resources" .Values.resources.mysql | nindent 10 }}
 ---

@@ -14,6 +14,13 @@ resources:
     memory: 1Gi
 
 podSecurityContext:
+  mysql: {}
+  leantime:
+    fsGroup: 1000
+    fsGroupChangePolicy: OnRootMismatch
+    supplementalGroupsPolicy: Strict
+
+securityContext:
   mysql:
     # runAsNonRoot: true
     privileged: false
