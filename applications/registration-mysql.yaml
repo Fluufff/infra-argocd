@@ -2,6 +2,7 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: mysql-data
+  namespace: platyplus
   labels:
     app.kubernetes.io/name: platyplus
     app.kubernetes.io/component: mysql
