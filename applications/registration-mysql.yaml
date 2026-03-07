@@ -72,13 +72,10 @@ spec:
           readOnly: true
         - name: mysql-data
           mountPath: /var/lib/mysql
-          readOnly: false
         - name: tmp
           mountPath: /tmp
-          readOnly: false
         - name: run
           mountPath: /var/run/mysqld
-          readOnly: false
         env:
         - name: MYSQL_USER_FILE
           value: /etc/secrets/mysql-user/user
@@ -97,12 +94,12 @@ spec:
             type: RuntimeDefault
           # capabilities:
           #   drop: ["ALL"]
-        resources:
-          # startup peak: 0.09
-          # peak: 0.015
-          cpu: 10m
-          # peak: 134M
-          memory: 1Gi
+        # resources:
+        #   # startup peak: 0.09
+        #   # peak: 0.015
+        #   cpu: 10m
+        #   # peak: 134M
+        #   memory: 1Gi
 ---
 apiVersion: v1
 kind: Service
