@@ -76,7 +76,7 @@ spec:
     app.kubernetes.io/name: platyplus
     app.kubernetes.io/component: platyplus
   ports:
-  - name: HTTP
+  - name: http
     port: 80
     protocol: TCP
     targetPort: 80
