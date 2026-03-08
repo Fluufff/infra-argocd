@@ -84,7 +84,7 @@ spec:
         - name: MARIADB_ROOT_PASSWORD_FILE
           value: /etc/secrets/mariadb-admin/pass
         - name: MARIADB_DATABASE
-          value: platyplus 
+          value: fluufff 
         securityContext:
           # runAsNonRoot: true
           privileged: false
