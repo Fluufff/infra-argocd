@@ -62,28 +62,27 @@ data:
       location ~* ^/(assets|files|robots\.txt) { }
     }
 ---
-apiVersion: apps/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: nginx
   namespace: platyplus
+  labels:
+    app.kubernetes.io/name: platyplus
+    app.kubernetes.io/component: nginx
 spec:
   replicas: 1
+  revisionHistoryLimit: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: platyplus
+      app.kubernetes.io/component: nginx
   template:
     metadata:
       labels:
         app.kubernetes.io/name: platyplus
         app.kubernetes.io/component: nginx
     spec:
-      volumes:
-      - name: code
-        hostPath:
-          path: /data/platyplus/code
-          type: Directory
-      - name: assets
-        hostPath:
-          path: /data/platyplus/assets
-          type: Directory
       containers:
       - name: nginx
         image: nginx
@@ -100,7 +99,6 @@ spec:
           readOnly: true
         - name: assets
           mountPath: /var/www/html/assets
-          readOnly: false
       volumes:
       - name: nginx-conf
         configMap:
@@ -110,6 +108,14 @@ spec:
               path: nginx.conf
       - name: log
         emptyDir: {}
+      - name: code
+        hostPath:
+          path: /data/platyplus/code
+          type: Directory
+      - name: assets
+        hostPath:
+          path: /data/platyplus/assets
+          type: Directory
 ---
 apiVersion: v1
 kind: Service
