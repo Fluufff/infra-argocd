@@ -1,0 +1,65 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: planka
+  namespace: argocd
+spec:
+  project: default
+  source:
+    chart: planka
+    repoURL: http://plankanban.github.io/planka
+    targetRevision: 2.0.3
+    helm:
+      releaseName: planka
+      valuesObject:
+        global:
+          storageClass: "zfs-local"
+        baseUrl: "https://planka.next.fluufff.org"
+        ## NOTE: Must contain key `key`
+        existingSecretkeySecret: "session"
+        ## NOTE: Must contain keys `username` and `password`
+        existingAdminCredsSecret: "admin-user"
+        admin_email: "it@fluufff.org"
+        admin_name: "Fluufff IT"
+        podSecurityContext: {}
+        securityContext: {}
+        resources: {}
+        persistence:
+          enabled: true
+          storageClass: "zfs-local"
+          size: 10Gi
+        oidc:
+          enabled: true
+          ## NOTE: Must contain key `clientId` and `clientSecret`
+          existingSecret: "google-auth"
+          issuerUrl: https://accounts.google.com
+          admin:
+            ignoreRoles: true
+
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: planka
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: planka
+  namespace: planka
+  labels:
+    app.kubernetes.io/name: planka
+spec:
+  entryPoints:
+  - websecure
+  routes:
+  - kind: Rule
+    match: Host(`planka.next.fluufff.org`)
+    services:
+    - kind: Service
+      name: planka
+      port: 1337
