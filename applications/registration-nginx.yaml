@@ -4,7 +4,7 @@ metadata:
   name: nginx-conf
   namespace: platyplus
 data:
-  nginx.conf: |
+  default.conf: |
     server {
       listen 0.0.0.0:80;
       root /var/www/html;
@@ -89,7 +89,7 @@ spec:
         ports:
         - containerPort: 80
         volumeMounts:
-        - mountPath: /etc/nginx
+        - mountPath: /etc/nginx/conf.d
           readOnly: true
           name: nginx-conf
         - mountPath: /var/log/nginx
@@ -103,9 +103,6 @@ spec:
       - name: nginx-conf
         configMap:
           name: nginx-conf
-          items:
-            - key: nginx.conf
-              path: nginx.conf
       - name: log
         emptyDir: {}
       - name: code
