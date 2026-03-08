@@ -1,11 +1,11 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: mysql-data
+  name: mariadb-data
   namespace: platyplus
   labels:
     app.kubernetes.io/name: platyplus
-    app.kubernetes.io/component: mysql
+    app.kubernetes.io/component: mariadb
 spec:
   storageClassName: zfs-local
   accessModes:
@@ -17,19 +17,19 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mysql
+  name: mariadb
   namespace: platyplus
   creationTimestamp: null
   labels:
     app.kubernetes.io/name: platyplus
-    app.kubernetes.io/component: mysql
+    app.kubernetes.io/component: mariadb
 spec:
   replicas: 1
   revisionHistoryLimit: 1
   selector:
     matchLabels:
       app.kubernetes.io/name: platyplus
-      app.kubernetes.io/component: mysql
+      app.kubernetes.io/component: mariadb
   strategy:
     type: Recreate
   template:
@@ -37,20 +37,20 @@ spec:
       creationTimestamp: null
       labels:
         app.kubernetes.io/name: platyplus
-        app.kubernetes.io/component: mysql
+        app.kubernetes.io/component: mariadb
     spec:
       volumes:
-      - name: mysql-admin
+      - name: mariadb-admin
         secret:
-          secretName: mysql-admin
+          secretName: mariadb-admin
           defaultMode: 0440
-      - name: mysql-user
+      - name: mariadb-user
         secret:
-          secretName: mysql-user
+          secretName: mariadb-user
           defaultMode: 0440
-      - name: mysql-data
+      - name: mariadb-data
         persistentVolumeClaim:
-          claimName: mysql-data
+          claimName: mariadb-data
       - name: tmp
         emptyDir: {}
       - name: run
@@ -61,29 +61,29 @@ spec:
       hostNetwork: false
       securityContext: {}
       containers:
-      - name: mysql
-        image: docker.io/mysql:9.5.0
+      - name: mariadb
+        image: docker.io/mariadb:12.2.2
         volumeMounts:
-        - name: mysql-admin
-          mountPath: /etc/secrets/mysql-admin
+        - name: mariadb-admin
+          mountPath: /etc/secrets/mariadb-admin
           readOnly: true
-        - name: mysql-user
-          mountPath: /etc/secrets/mysql-user
+        - name: mariadb-user
+          mountPath: /etc/secrets/mariadb-user
           readOnly: true
-        - name: mysql-data
+        - name: mariadb-data
           mountPath: /var/lib/mysql
         - name: tmp
           mountPath: /tmp
         - name: run
           mountPath: /var/run/mysqld
         env:
-        - name: MYSQL_USER_FILE
-          value: /etc/secrets/mysql-user/user
-        - name: MYSQL_PASSWORD_FILE
-          value: /etc/secrets/mysql-user/pass
-        - name: MYSQL_ROOT_PASSWORD_FILE
-          value: /etc/secrets/mysql-admin/pass
-        - name: MYSQL_DATABASE
+        - name: MARIADB_USER_FILE
+          value: /etc/secrets/mariadb-user/user
+        - name: MARIADB_PASSWORD_FILE
+          value: /etc/secrets/mariadb-user/pass
+        - name: MARIADB_ROOT_PASSWORD_FILE
+          value: /etc/secrets/mariadb-admin/pass
+        - name: MARIADB_DATABASE
           value: platyplus 
         securityContext:
           # runAsNonRoot: true
@@ -104,17 +104,17 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: platyplus-mysql
+  name: platyplus-mariadb
   namespace: platyplus
   creationTimestamp: null
   labels:
     app.kubernetes.io/name: platyplus
-    app.kubernetes.io/component: mysql
+    app.kubernetes.io/component: mariadb
 spec:
   type: ClusterIP
   selector:
     app.kubernetes.io/name: platyplus
-    app.kubernetes.io/component: mysql
+    app.kubernetes.io/component: mariadb
   ports:
   - name: sql
     port: 3306
