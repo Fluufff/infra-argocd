@@ -1,0 +1,123 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: php-fpm
+data:
+  www.conf: |
+    [www]
+    user = www-data
+    group = www-data
+    listen = 127.0.0.1:9000
+    pm = dynamic
+    pm.max_children = 500
+    pm.start_servers = 2
+    pm.min_spare_servers = 1
+    pm.max_spare_servers = 3
+    catch_workers_output = yes
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: php
+data:
+  debug.ini: |
+    display_errors = On
+    display_startup_errors = On
+    log_errors = On
+    error_reporting = E_ALL
+    error_log = /proc/self/fd/2
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: platyplus
+  labels:
+    app.kubernetes.io/name: platyplus
+    app.kubernetes.io/component: platyplus
+spec:
+  replicas: 1
+  revisionHistoryLimit: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: platyplus
+      app.kubernetes.io/component: platyplus
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: platyplus
+        app.kubernetes.io/component: platyplus
+    spec:
+      volumes:
+      - name: code
+        hostPath:
+          path: /data/platyplus/code
+          type: Directory
+      - name: config
+        hostPath:
+          path: /data/platyplus/{{ .Values.host }}/config
+          type: Directory
+      - name: assets
+        hostPath:
+          path: /data/platyplus/{{ .Values.host }}/assets
+          type: Directory
+      - name: php
+        configMap:
+          name: php
+          items:
+          - key: debug.ini
+            path: debug.ini
+      - name: php-fpm
+        configMap:
+          name: php-fpm
+          items:
+          - key: www.conf
+            path: www.conf
+      imagePullSecrets:
+      - name: ghcr
+      containers:
+      - image: ghcr.io/fluufff/platyplus:07-03-2026
+        name: platyplus
+        resources: {}
+        env:
+        - name: CI_ENV
+          value: "production"
+        - name: PHP_OPCACHE_VALIDATE_TIMESTAMPS
+          value: "1"
+        volumeMounts:
+        - name: code
+          mountPath: /var/www/html
+          readOnly: true
+        - name: assets
+          mountPath: /var/www/html/assets
+          readOnly: false
+        - name: config
+          mountPath: /var/www/html/platyplus/config/production
+          readOnly: true
+        - name: php
+          mountPath: /usr/local/etc/php/conf.d/debug.ini
+          subPath: debug.ini
+        - name: php-fpm
+          mountPath: /usr/local/etc/php-fpm.d/www.conf
+          subPath: www.conf
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: platyplus-php
+  creationTimestamp: null
+  labels:
+    app.kubernetes.io/name: platyplus
+    app.kubernetes.io/component: platyplus
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: platyplus
+    app.kubernetes.io/component: platyplus
+  ports:
+  - name: http
+    port: 9000
+    protocol: TCP
+    targetPort: 9000
+---
