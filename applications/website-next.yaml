@@ -1,0 +1,62 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: website-next
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: website-next
+  namespace: website-next
+  labels:
+    app: website-next
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: website-next
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: website-next
+    spec:
+      containers:
+      - image: ghcr.io/fluufff/website:latest
+        name: website-next
+        resources: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: website-next
+  namespace: website-next
+  labels:
+    app: website-next
+spec:
+  ports:
+  - name: 80-80
+    port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    app: website-next
+  type: ClusterIP
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: website-next
+  namespace: website-next
+  labels:
+    app: website-next
+spec:
+  entryPoints:
+  - websecure
+  routes:
+  - kind: Rule
+    match: Host(`www.next.fluufff.org`) || Host(`next.fluufff.org`) || Host(`test-website.fluufff.org`)
+    services:
+    - kind: Service
+      name: website-next
+      port: 80
