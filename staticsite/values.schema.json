@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "properties": {
+    "image": {
+      "description": "Container Image",
+      "properties": {
+        "registry": {
+          "type": "string"
+        },
+        "repository": {
+          "type": "string"
+        },
+        "tag": {
+          "type": "string"
+        },
+        "pullPolicy": {
+          "enum": ["Always", "IfNotPresent", "Never"]
+        }
+      },
+      "type": "object",
+      "required": [
+        "registry",
+        "repository",
+        "tag",
+        "pullPolicy"
+      ]
+    },
+    "host": {
+      "description": "Site FQDN",
+      "type": "string"
+    },
+    "port": {
+      "description": "Container port",
+      "minimum": 1,
+      "type": "integer"
+    }
+  },
+  "required": [
+    "image",
+    "host",
+    "port"
+  ],
+  "type": "object"
+}

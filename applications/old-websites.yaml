@@ -1,0 +1,50 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: old-websites
+spec:
+  goTemplate: true
+  goTemplateOptions: ["missingkey=error"]
+  generators:
+  - list:
+      elements:
+      - year: 2017
+      - year: 2018
+      - year: 2019
+      - year: 2021
+      - year: 2022
+  template:
+    metadata:
+      name: website-{{ .year }}
+      namespace: argocd
+    spec:
+      project: default
+      source:
+        repoURL: https://github.com/Fluufff/infra-argocd.git
+        targetRevision: next
+        path: staticsite
+        helm:
+          releaseName: website-{{ .year }}
+          valuesObject:
+            host: "{{ .year }}.fluufff.org"
+            image:
+              repository: fluufff/website-{{ .year }}
+              tag: latest
+      destination:
+        server: "https://kubernetes.default.svc"
+        namespace: website-{{ .year }}
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+        - CreateNamespace=true
+        - RespectIgnoreDifferences=true
+      ignoreDifferences:
+      - group: apps
+        kind: Deployment
+        jsonPointers:
+        - /spec/replicas
+      - kind: Secret
+        jqPathExpressions:
+        - .data

@@ -1,0 +1,9 @@
+# host: 2017.fluufff.org
+
+image:
+  registry: ghcr.io
+  repository: nginx
+  pullPolicy: IfNotPresent
+  tag: latest
+
+port: 80
