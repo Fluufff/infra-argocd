@@ -170,7 +170,7 @@ kind: Service
 metadata:
   name: platyplus-nginx
 spec:
-  type: LoadBalancer
+  type: ClusterIP
   ports:
   - port: 80
     targetPort: 80
