@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: website
+  labels:
+    app: website
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: website
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: website
+    spec:
+      containers:
+      - image: ghcr.io/fluufff/website:next
+        imagePullPolicy: Always
+        name: website
+        resources: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: website
+  labels:
+    app: website
+spec:
+  ports:
+  - name: http
+    port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    app: website
+  type: ClusterIP

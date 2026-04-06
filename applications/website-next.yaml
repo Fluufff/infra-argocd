@@ -1,103 +1,32 @@
-apiVersion: v1
-kind: Namespace
+apiVersion: argoproj.io/v1alpha1
+kind: Application
 metadata:
   name: website-next
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: website-next
-  namespace: website-next
-  labels:
-    app: website-next
+  namespace: argocd
 spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: website-next
-  strategy: {}
-  template:
-    metadata:
-      labels:
-        app: website-next
-    spec:
-      containers:
-      - image: ghcr.io/fluufff/website:latest
-        name: website-next
-        resources: {}
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: website-next
-  namespace: website-next
-  labels:
-    app: website-next
-spec:
-  ports:
-  - name: 80-80
-    port: 80
-    protocol: TCP
-    targetPort: 80
-  selector:
-    app: website-next
-  type: ClusterIP
----
-apiVersion: traefik.io/v1alpha1
-kind: IngressRoute
-metadata:
-  name: website-next
-  namespace: website-next
-  labels:
-    app: website-next
-spec:
-  entryPoints:
-  - websecure
-  routes:
-  - kind: Rule
-    match: Host(`www.next.fluufff.org`) || Host(`next.fluufff.org`)
-    services:
-    - kind: Service
-      name: website-next
-      port: 80
----
-# Used by GitHub CI to push image updates
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: github-actions
-  namespace: website-next
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: Role
-metadata:
-  name: update-website-image
-  namespace: website-next
-rules:
-- apiGroups: ["apps"]
-  resources: ["deployments"]
-  resourceNames: ["website-next"]
-  verbs: ["get","list","update","patch"]
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: RoleBinding
-metadata:
-  name: github-update-website-image
-  namespace: website-next
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: Role
-  name: update-website-image
-subjects:
-- kind: ServiceAccount
-  name: github-actions
----
-# Used by SecHub instances to read the cluster
-apiVersion: v1
-kind: Secret
-type: kubernetes.io/service-account-token
-metadata:
-  name: github-actions-token
-  namespace: website-next
-  annotations:
-    kubernetes.io/service-account.name: github-actions
+  project: default
+  source:
+    repoURL: https://github.com/Fluufff/infra-argocd.git
+    targetRevision: next
+    path: website-next
+    helm:
+      releaseName: website-next
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: website-next
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true
+    - RespectIgnoreDifferences=true
+  ignoreDifferences:
+  - group: apps
+    kind: Deployment
+    jqPathExpressions:
+    - .spec.replicas
+    - .spec.template.spec.containers[].image
+  - kind: Secret
+    jqPathExpressions:
+    - .data

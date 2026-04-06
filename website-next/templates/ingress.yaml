@@ -1,0 +1,16 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: website
+  labels:
+    app: website
+spec:
+  entryPoints:
+  - websecure
+  routes:
+  - kind: Rule
+    match: Host(`www.next.fluufff.org`) || Host(`next.fluufff.org`)
+    services:
+    - kind: Service
+      name: website
+      port: http
