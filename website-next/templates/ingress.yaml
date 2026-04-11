@@ -9,7 +9,7 @@ spec:
   - websecure
   routes:
   - kind: Rule
-    match: Host(`www.next.fluufff.org`) || Host(`next.fluufff.org`)
+    match: Host(`www.next.fluufff.org`) || Host(`next.fluufff.org`) || Host(`test-website.fluufff.org`)
     services:
     - kind: Service
       name: website
