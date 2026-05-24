@@ -1,0 +1,36 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: vaultwarden
+  namespace: argocd
+spec:
+  project: default
+  # We take the helm chart from pascaliske and add our value values file
+  # See: https://argo-cd.readthedocs.io/en/stable/user-guide/multiple_sources/
+  sources:
+    - repoURL: https://github.com/FurryJulie/helm-charts
+      path: charts/vaultwarden
+      targetRevision: main
+      helm:
+        valueFiles:
+          - $values/vaultwarden/values.yaml
+    - repoURL: https://github.com/FurryJulie/infra-argocd.git
+      targetRevision: dev
+      path: vaultwarden
+      ref: values
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - RespectIgnoreDifferences=true
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: vaultwarden
+#  source:
+#    - repoURL: https://github.com/FurryJulie/infra-argocd.git
+#      targetRevision: dev
+#      path: vaultwarden
+#      helm:
+#        releaseName: vaultwarden
