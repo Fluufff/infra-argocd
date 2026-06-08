@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: sqlite-data
+  labels:
+    {{- include "strapi.labels" . | nindent 4 }}
+    app.kubernetes.io/component: sqlite
+spec:
+  storageClassName: zfs-local
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: uploads
+  labels:
+    {{- include "strapi.labels" . | nindent 4 }}
+    app.kubernetes.io/component: sqlite
+spec:
+  storageClassName: zfs-local
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi

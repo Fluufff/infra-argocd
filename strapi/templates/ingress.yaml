@@ -1,0 +1,16 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  labels:
+    {{- include "strapi.labels" . | nindent 4 }}
+  name: strapi
+spec:
+  entryPoints:
+  - websecure
+  routes:
+  - kind: Rule
+    match: Host(`{{ .Values.fqdn }}`)
+    services:
+    - kind: Service
+      name: strapi
+      port: 80

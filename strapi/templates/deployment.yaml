@@ -1,0 +1,78 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    {{- include "strapi.labels" . | nindent 4 }}
+    app.kubernetes.io/component: strapi
+  name: strapi
+spec:
+  replicas: 1
+  revisionHistoryLimit: 1
+  selector:
+    matchLabels:
+      {{- include "strapi.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: strapi
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        {{- include "strapi.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: strapi
+    spec:
+      hostPID: false
+      hostIPC: false
+      automountServiceAccountToken: false
+      hostNetwork: false
+      volumes:
+      - name: sqlite-data
+        persistentVolumeClaim:
+          claimName: sqlite-data
+      - name: uploads
+        persistentVolumeClaim:
+          claimName: uploads
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+      - name: strapi
+        image: {{ .Values.image }}
+        imagePullPolicy: Always
+        envFrom:
+        - secretRef:
+            name: strapi-secrets
+        env:
+        - name: DATABASE_FILENAME
+          value: /var/strapi/db/data.db
+        - name: PUBLIC_URL
+          value: https://{{ .Values.fqdn }}
+        securityContext:
+          {{- toYaml .Values.securityContext | nindent 10 }}
+        volumeMounts:
+        - name: sqlite-data
+          mountPath: /opt/app/var/strapi/db
+          readOnly: false
+        - name: uploads
+          mountPath: /opt/app/public/uploads
+          readOnly: false
+        resources:
+          {{- include "strapi.resources" .Values.resources | nindent 10 }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    {{- include "strapi.labels" . | nindent 4 }}
+    app.kubernetes.io/component: strapi
+  name: strapi
+spec:
+  ports:
+  - name: http
+    port: 80
+    protocol: TCP
+    targetPort: 1337
+  selector:
+    {{- include "strapi.selectorLabels" . | nindent 4 }}
+    app.kubernetes.io/component: strapi
+  type: ClusterIP

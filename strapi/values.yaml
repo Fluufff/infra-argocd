@@ -1,0 +1,25 @@
+image: ghcr.io/fluufff/fluufffy-strapi:main
+
+fqdn: cms.next.fluufff.org
+
+resources:
+  cpu: 100m
+  memory: 2Gi
+
+podSecurityContext:
+  fsGroup: 1000
+  fsGroupChangePolicy: OnRootMismatch
+  supplementalGroupsPolicy: Strict
+
+securityContext:
+  runAsNonRoot: true
+  runAsUser: 1000
+  runAsGroup: 1000
+  privileged: false
+  allowPrivilegeEscalation: false
+  # readOnlyRootFilesystem: true
+  seccompProfile:
+    type: RuntimeDefault
+  capabilities:
+    drop: ["ALL"]
+    add: []
