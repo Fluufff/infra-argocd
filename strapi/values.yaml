@@ -1,6 +1,6 @@
 image: ghcr.io/fluufff/fluufffy-strapi:main
 
-fqdn: cms.next.fluufff.org
+fqdn: cms.fluufff.org
 
 resources:
   cpu: 100m
