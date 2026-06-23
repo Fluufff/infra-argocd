@@ -83,13 +83,14 @@ env:
     value: UTC
   # See: https://github.com/Timshel/OIDCWarden/blob/main/SSO.md
   - name: SSO_AUTHORITY
-    value: "https://accounts.google.com"
+    #value: "https://accounts.google.com"
+    value: "${{ secrets.VW_OIDC_SSO_AUTHORITY }}"
   - name: SSO_AUTHORIZE_EXTRA_PARAMS
     value: '"access_type=offline&prompt=consent"'
   - name: SSO_CLIENT_ID
-    value: "test"
+    value: "${{ secrets.VW_OIDC_CLIENT_ID }}"
   - name: SSO_CLIENT_SECRET
-    value: "test"
+    value: "${{ secrets.VW_OIDC_CLIENT_SECRET }}"
   - name: SSO_ONLY
     value: true
   - name: SSO_SIGNUPS_MATCH_EMAIL
