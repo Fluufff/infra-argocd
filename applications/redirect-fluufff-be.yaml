@@ -1,0 +1,31 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: redirect-fluufff-be
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/Fluufff/infra-argocd.git
+    targetRevision: next
+    path: redirect-fluufff-be
+    helm:
+      releaseName: redirect-fluufff-be
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: redirect-fluufff-be
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true
+    - RespectIgnoreDifferences=true
+  ignoreDifferences:
+  - group: apps
+    kind: Deployment
+    jsonPointers:
+    - /spec/replicas
+  - kind: Secret
+    jqPathExpressions:
+    - .data
