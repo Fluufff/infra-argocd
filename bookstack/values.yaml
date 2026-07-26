@@ -1,0 +1,5 @@
+host: bookstack.next.fluufff.org
+
+images:
+  bookstack: solidnerd/bookstack:26.5
+  mariadb: docker.io/mariadb:12.2.2

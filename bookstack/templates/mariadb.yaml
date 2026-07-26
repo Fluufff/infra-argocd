@@ -1,0 +1,119 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mariadb-data
+  labels:
+    app.kubernetes.io/name: bookstack
+    app.kubernetes.io/component: mariadb
+spec:
+  storageClassName: zfs-local
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mariadb
+  creationTimestamp: null
+  labels:
+    app.kubernetes.io/name: bookstack
+    app.kubernetes.io/component: mariadb
+spec:
+  replicas: 1
+  revisionHistoryLimit: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: bookstack
+      app.kubernetes.io/component: mariadb
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app.kubernetes.io/name: bookstack
+        app.kubernetes.io/component: mariadb
+    spec:
+      volumes:
+      - name: mariadb-admin
+        secret:
+          secretName: mariadb-admin
+          defaultMode: 0440
+      - name: mariadb-user
+        secret:
+          secretName: mariadb-user
+          defaultMode: 0440
+      - name: mariadb-data
+        persistentVolumeClaim:
+          claimName: mariadb-data
+      - name: tmp
+        emptyDir: {}
+      - name: run
+        emptyDir: {}
+      hostPID: false
+      hostIPC: false
+      automountServiceAccountToken: false
+      hostNetwork: false
+      securityContext: {}
+      containers:
+      - name: mariadb
+        image: {{ required "mariadb image is required" .Values.images.mariadb }}
+        volumeMounts:
+        - name: mariadb-admin
+          mountPath: /etc/secrets/mariadb-admin
+          readOnly: true
+        - name: mariadb-user
+          mountPath: /etc/secrets/mariadb-user
+          readOnly: true
+        - name: mariadb-data
+          mountPath: /var/lib/mysql
+        - name: tmp
+          mountPath: /tmp
+        - name: run
+          mountPath: /var/run/mysqld
+        env:
+        - name: MARIADB_USER_FILE
+          value: /etc/secrets/mariadb-user/user
+        - name: MARIADB_PASSWORD_FILE
+          value: /etc/secrets/mariadb-user/pass
+        - name: MARIADB_ROOT_PASSWORD_FILE
+          value: /etc/secrets/mariadb-admin/pass
+        - name: MARIADB_DATABASE
+          value: bookstack 
+        securityContext:
+          # runAsNonRoot: true
+          privileged: false
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          seccompProfile:
+            type: RuntimeDefault
+          # capabilities:
+          #   drop: ["ALL"]
+        # resources:
+        #   # startup peak: 0.09
+        #   # peak: 0.015
+        #   cpu: 10m
+        #   # peak: 134M
+        #   memory: 1Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mariadb
+  creationTimestamp: null
+  labels:
+    app.kubernetes.io/name: bookstack
+    app.kubernetes.io/component: mariadb
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: bookstack
+    app.kubernetes.io/component: mariadb
+  ports:
+  - name: sql
+    port: 3306
+    protocol: TCP
+    targetPort: 3306

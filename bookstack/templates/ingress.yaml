@@ -1,0 +1,16 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  labels:
+    {{- include "bookstack.labels" . | nindent 4 }}
+  name: strapi
+spec:
+  entryPoints:
+  - websecure
+  routes:
+  - kind: Rule
+    match: Host(`{{ .Values.host }}`)
+    services:
+    - kind: Service
+      name: bookstack
+      port: 8080
