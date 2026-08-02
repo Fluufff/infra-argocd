@@ -22,7 +22,7 @@ spec:
       source:
         repoURL: https://github.com/Fluufff/infra-argocd.git
         targetRevision: next
-        path: staticsite
+        path: charts/staticsite
         helm:
           releaseName: website-{{ .year }}
           valuesObject:

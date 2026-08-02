@@ -8,7 +8,7 @@ spec:
   source:
     repoURL: https://github.com/Fluufff/infra-argocd.git
     targetRevision: next
-    path: platyplus
+    path: charts/platyplus
     helm:
       releaseName: platyplus-next
       valuesObject:

@@ -8,7 +8,7 @@ spec:
   source:
     repoURL: https://github.com/Fluufff/infra-argocd.git
     targetRevision: next
-    path: website-next
+    path: charts/website-next
     helm:
       releaseName: website-next
   destination:
