@@ -7,7 +7,7 @@ spec:
   project: default
   source:
     repoURL: https://github.com/Fluufff/infra-argocd.git
-    targetRevision: bookstack
+    targetRevision: next
     path: charts/bookstack
     helm:
       releaseName: bookstack
