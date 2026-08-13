@@ -50,7 +50,7 @@ ingressRoute:
   entryPoints: ["websecure"]
   # -- [Matching rule](https://doc.traefik.io/traefik/routing/routers/#rule) for the underlying router.
   #rule: 'Host(`vaultwarden.next.fluufff.org`)'
-  rule: "Host(`vaultwarden.fluuffftest.fpsource.info`)"
+  rule: "Host(`vaultwarden.next.fluufff.org`)"
   # -- List of [middleware objects](https://doc.traefik.io/traefik/routing/providers/kubernetes-crd/#kind-middleware) for the ingress route.
   middlewares: []
   # -- Use an existing secret containing the TLS certificate.
