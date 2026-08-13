@@ -96,6 +96,8 @@ env:
       secretKeyRef:
         name: oidc
         key: client_secret
+  - name: SSO_ENABLED
+    value: true
   - name: SSO_ONLY
     value: true
   - name: SSO_SIGNUPS_MATCH_EMAIL
