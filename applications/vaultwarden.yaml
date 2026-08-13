@@ -13,10 +13,10 @@ spec:
       targetRevision: main
       helm:
         valueFiles:
-          - $values/vaultwarden/values.yaml
-    - repoURL: https://github.com/FurryJulie/infra-argocd.git
-      targetRevision: dev
-      path: vaultwarden
+          - $values/charts/vaultwarden/values.yaml
+    - repoURL: https://github.com/Fluufff/infra-argocd.git
+      targetRevision: next
+      path: charts
       ref: values
   syncPolicy:
     automated:
