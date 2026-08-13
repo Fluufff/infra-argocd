@@ -6,12 +6,12 @@ image:
   repository: timshel/oidcwarden
   # -- The docker tag, if left empty chart's appVersion will be used.
   # @default -- `.Chart.AppVersion`
-  tag: 'v2026.3.1-3'
+  tag: "v2026.3.1-3"
   # -- The pull policy for the controller.
   pullPolicy: IfNotPresent
 
-nameOverride: ''
-fullnameOverride: ''
+nameOverride: ""
+fullnameOverride: ""
 
 controller:
   # -- Create a workload for this chart.
@@ -33,9 +33,9 @@ service:
   # -- The service type used.
   type: ClusterIP
   # -- ClusterIP used if service type is `ClusterIP`.
-  clusterIP: ''
+  clusterIP: ""
   # -- LoadBalancerIP if service type is `LoadBalancer`.
-  loadBalancerIP: ''
+  loadBalancerIP: ""
   # -- Allowed addresses when service type is `LoadBalancer`.
   loadBalancerSourceRanges: []
   # -- Additional annotations for the service object.
@@ -50,11 +50,11 @@ ingressRoute:
   entryPoints: ["websecure"]
   # -- [Matching rule](https://doc.traefik.io/traefik/routing/routers/#rule) for the underlying router.
   #rule: 'Host(`vaultwarden.next.fluufff.org`)'
-  rule: 'Host(`vaultwarden.fluuffftest.fpsource.info`)'
+  rule: "Host(`vaultwarden.fluuffftest.fpsource.info`)"
   # -- List of [middleware objects](https://doc.traefik.io/traefik/routing/providers/kubernetes-crd/#kind-middleware) for the ingress route.
   middlewares: []
   # -- Use an existing secret containing the TLS certificate.
-  tlsSecretName: ''
+  tlsSecretName: ""
   # -- Additional annotations for the ingress route object.
   annotations: {}
   # -- Additional labels for the ingress route object.
@@ -66,12 +66,12 @@ certificate:
   # -- List of subject alternative names for the certificate.
   dnsNames: []
   # -- Name of the secret in which the certificate will be stored. Defaults to the first item in dnsNames.
-  secretName: ''
+  secretName: ""
   issuerRef:
     # -- The type of the referenced certificate issuer. It can be "Issuer" or "ClusterIssuer".
     kind: ClusterIssuer
     # -- Name of the referenced certificate issuer.
-    name: ''
+    name: ""
   # -- Additional annotations for the certificate object.
   annotations: {}
   # -- Additional labels for the certificate object.
@@ -83,14 +83,19 @@ env:
     value: UTC
   # See: https://github.com/Timshel/OIDCWarden/blob/main/SSO.md
   - name: SSO_AUTHORITY
-    #value: "https://accounts.google.com"
-    value: "${{ secrets.VW_OIDC_SSO_AUTHORITY }}"
+    value: "https://accounts.google.com"
   - name: SSO_AUTHORIZE_EXTRA_PARAMS
     value: '"access_type=offline&prompt=consent"'
   - name: SSO_CLIENT_ID
-    value: "${{ secrets.VW_OIDC_CLIENT_ID }}"
+    valueFrom:
+      secretKeyRef:
+        name: oidc
+        key: client_id
   - name: SSO_CLIENT_SECRET
-    value: "${{ secrets.VW_OIDC_CLIENT_SECRET }}"
+    valueFrom:
+      secretKeyRef:
+        name: oidc
+        key: client_secret
   - name: SSO_ONLY
     value: true
   - name: SSO_SIGNUPS_MATCH_EMAIL
@@ -116,11 +121,11 @@ secret:
   # -- Create a new secret object.
   create: true
   # -- Use an existing secret object.
-  existingSecret: ''
+  existingSecret: ""
   # -- Secret values used when not using an existing secret. Helm templates are supported for values.
   values:
     # -- Secret key for session tokens.
-    ADMIN_TOKEN: '{{ randAlphaNum 42 | b64enc }}'
+    ADMIN_TOKEN: "{{ randAlphaNum 42 | b64enc }}"
   # -- Additional annotations for the secret object.
   annotations: {}
   # -- Additional labels for the secret object.
@@ -138,9 +143,9 @@ persistentVolumeClaim:
   # -- Storage request size for the persistent volume claim object.
   size: 1Gi
   # -- Storage class name for the persistent volume claim object.
-  storageClassName: ''
+  storageClassName: ""
   # -- Use an existing persistent volume claim object.
-  existingPersistentVolumeClaim: ''
+  existingPersistentVolumeClaim: ""
   # -- Additional annotations for the persistent volume claim object.
   annotations: {}
   # -- Additional labels for the persistent volume claim object.
@@ -150,7 +155,7 @@ serviceAccount:
   # -- Create a `ServiceAccount` object.
   create: true
   # -- Specify the service account used for the controller.
-  name: ''
+  name: ""
   # -- Additional annotations for the service account object.
   annotations: {}
   # -- Additional labels for the service account object.
@@ -165,7 +170,7 @@ rbac:
   labels: {}
 
 # -- Optional priority class name to be used for pods.
-priorityClassName: ''
+priorityClassName: ""
 #
 # -- Container-level security attributes. More info [here](https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/pod-v1/#security-context).
 securityContext: {}
