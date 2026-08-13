@@ -84,8 +84,8 @@ env:
   # See: https://github.com/Timshel/OIDCWarden/blob/main/SSO.md
   - name: SSO_AUTHORITY
     value: "https://accounts.google.com"
-  - name: SSO_AUTHORIZE_EXTRA_PARAMS
-    value: '"access_type=offline&prompt=consent"'
+  # - name: SSO_AUTHORIZE_EXTRA_PARAMS
+  #   value: '"access_type=offline&prompt=consent"'
   - name: SSO_CLIENT_ID
     valueFrom:
       secretKeyRef:
@@ -96,6 +96,8 @@ env:
       secretKeyRef:
         name: oidc
         key: client_secret
+  - name: DOMAIN
+    value: "https://vaultwarden.next.fluufff.org"
   - name: SSO_ENABLED
     value: true
   - name: SSO_ONLY
@@ -108,6 +110,8 @@ env:
     value: true
   - name: SSO_ORGANIZATIONS_ALL_COLLECTIONS
     value: false
+  - name: SSO_SIGNUPS_ALLOWED
+    value: true
 ports:
   http:
     # -- Enable the port inside the `controller` and `Service` objects.
