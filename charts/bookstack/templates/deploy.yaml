@@ -34,7 +34,7 @@ spec:
               name: bookstack
               key: appkey
         - name: APP_URL
-          value: {{ printf "%s%s" "https://" ( required "host is required" .Values.host ) | quote }}
+          value: {{ printf "%s%s" "https://" ( required "domain is required" .Values.domain ) | quote }}
         - name: DB_HOST
           value: mariadb
         - name: DB_DATABASE
