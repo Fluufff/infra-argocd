@@ -1,0 +1,4 @@
+domain: bartendr.fluufff.org
+
+images:
+  bartendr: ghcr.io/eowync/drinkr/drinkr:latest

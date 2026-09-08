@@ -1,19 +1,19 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: drinkr
+  name: bartendr
   namespace: argocd
 spec:
   project: default
   source:
     repoURL: https://github.com/Fluufff/infra-argocd.git
     targetRevision: next
-    path: charts/drinkr
+    path: charts/bartendr
     helm:
-      releaseName: drinkr
+      releaseName: bartendr
   destination:
     server: "https://kubernetes.default.svc"
-    namespace: drinkr
+    namespace: bartendr
   syncPolicy:
     automated:
       prune: true

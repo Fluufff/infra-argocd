@@ -1,7 +1,7 @@
 apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
-  name: drinkr
+  name: bartendr
 spec:
   entryPoints:
     - websecure
@@ -10,5 +10,5 @@ spec:
       match: Host(`{{ .Values.domain }}`)
       services:
         - kind: Service
-          name: drinkr
+          name: bartendr
           port: 80
