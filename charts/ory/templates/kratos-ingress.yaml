@@ -1,0 +1,32 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: kratos-public
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`{{ .Values.kratos.domains.public }}`)
+      services:
+        - kind: Service
+          name: kratos-public
+          port: 80
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: kratos-admin
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`{{ .Values.kratos.domains.admin }}`)
+      services:
+        - kind: Service
+          name: kratos-admin
+          port: 80
+      middlewares:
+        - name: google-oauth
+          namespace: traefik

@@ -81,8 +81,8 @@ spec:
             - name: DSN
               value: sqlite:///var/lib/kratos/sqlite/db.sqlite?_fk=true&mode=rwc
           envFrom:
-          - secretRef:
-              name: kratos-secrets
+            - secretRef:
+                name: kratos-secrets
           securityContext:
             {{- toYaml .Values.kratos.containerSecurityContext | nindent 12 }}
           resources:
@@ -91,3 +91,46 @@ spec:
             requests:
               cpu: {{ .Values.kratos.resources.cpu }}
               memory: {{ .Values.kratos.resources.memory }}
+          ports:
+            - containerPort: 4433
+              name: http-public
+              protocol: TCP
+            - containerPort: 4434
+              name: http-admin
+              protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kratos-public
+  creationTimestamp: null
+  labels:
+    app.kubernetes.io/name: ory
+    app.kubernetes.io/component: kratos
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      protocol: TCP
+      targetPort: http-public
+  selector:
+    app.kubernetes.io/name: ory
+    app.kubernetes.io/component: kratos
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kratos-admin
+  creationTimestamp: null
+  labels:
+    app.kubernetes.io/name: ory
+    app.kubernetes.io/component: kratos
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      protocol: TCP
+      targetPort: http-admin
+  selector:
+    app.kubernetes.io/name: ory
+    app.kubernetes.io/component: kratos
