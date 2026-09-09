@@ -1,0 +1,59 @@
+podSecurityContext: &podSecurityContext
+  fsGroup: 1000
+  # supplementalGroups: []
+  fsGroupChangePolicy: OnRootMismatch
+
+containerSecurityContext: &containerSecurityContext
+  privileged: false
+  runAsGroup: 1000
+  runAsNonRoot: true
+  runAsUser: 1000
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: true
+  capabilities:
+    drop: ["ALL"]
+
+postgres:
+  image: docker.io/postgres:18.1
+  resources:
+    cpu: 10m
+    memory: 300Mi
+  podSecurityContext:
+    <<: *podSecurityContext
+  containerSecurityContext:
+    <<: *containerSecurityContext
+
+kratos:
+  image: oryd/kratos:v26.2.0
+  resources:
+    cpu: 10m
+    memory: 300Mi
+  podSecurityContext:
+    <<: *podSecurityContext
+  containerSecurityContext:
+    <<: *containerSecurityContext
+  domains:
+    public: auth.next.fluufff.org
+    admin: kratos.next.fluufff.org
+
+selfservice:
+  image: oryd/kratos-selfservice-ui-node:v26.2.0
+  resources:
+    cpu: 10m
+    memory: 300Mi
+  podSecurityContext:
+    <<: *podSecurityContext
+  containerSecurityContext:
+    <<: *containerSecurityContext
+  domain: account.next.fluufff.org
+
+hydra:
+  image: oryd/hydra:v26.2.0
+  resources:
+    cpu: 10m
+    memory: 300Mi
+  podSecurityContext:
+    <<: *podSecurityContext
+  containerSecurityContext:
+    <<: *containerSecurityContext
+  domain: oauth.next.fluufff.org
