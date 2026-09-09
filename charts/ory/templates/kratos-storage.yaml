@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: kratos-data
+  labels:
+    app.kubernetes.io/name: ory
+    app.kubernetes.io/component: kratos
+spec:
+  storageClassName: zfs-local
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
