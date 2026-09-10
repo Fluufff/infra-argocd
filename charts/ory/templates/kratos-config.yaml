@@ -5,6 +5,13 @@ metadata:
   name: kratos-config
 data:
   kratos.yml: |
+    cookies:
+      domain: next.fluufff.org
+      same_site: Lax
+    session:
+      cookie:
+        domain: next.fluufff.org
+        same_site: Lax
     serve:
       public:
         base_url: https://{{ .Values.kratos.domains.public }}
