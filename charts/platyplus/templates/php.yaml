@@ -52,7 +52,7 @@ spec:
       volumes:
       - name: code
         hostPath:
-          path: /data/platyplus/code
+          path: /data/platyplus/{{ .Values.codedir }}
           type: Directory
       - name: config
         hostPath:
