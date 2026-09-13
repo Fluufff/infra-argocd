@@ -13,6 +13,7 @@ spec:
       releaseName: platyplus-next
       valuesObject:
         host: registration.next.fluufff.org
+        codedir: code-next
   destination:
     server: "https://kubernetes.default.svc"
     namespace: platyplus-next
