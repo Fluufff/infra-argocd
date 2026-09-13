@@ -88,7 +88,7 @@ spec:
         volumeMounts:
         - name: code
           mountPath: /var/www/html
-          readOnly: true
+          readOnly: false
         - name: assets
           mountPath: /var/www/html/assets
           readOnly: false
