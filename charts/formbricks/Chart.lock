@@ -1,0 +1,6 @@
+dependencies:
+- name: hub
+  repository: oci://ghcr.io/formbricks/charts
+  version: 0.1.1
+digest: sha256:dc9b4d5f956bc0be8f8331a08868844ff29cbecb8a780d903b382b8e6f467b03
+generated: "2026-09-29T19:38:30.572828+02:00"

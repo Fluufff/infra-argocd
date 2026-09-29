@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    app.kubernetes.io/name: formbricks
+    app.kubernetes.io/component: postgres
+  name: postgres
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: formbricks
+    app.kubernetes.io/component: postgres
+  ports:
+    - name: sql
+      port: 5432
+      protocol: TCP
+      targetPort: 5432

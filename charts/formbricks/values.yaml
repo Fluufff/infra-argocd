@@ -1,0 +1,60 @@
+postgres:
+  image: postgres:18.6
+  # Pod level
+  # https://kubernetes.io/docs/reference/kubernetes-api/core/pod-v1/#PodSecurityContext
+  podSecurityContext:
+    fsGroup: 1000
+    fsGroupChangePolicy: OnRootMismatch
+    supplementalGroupsPolicy: Strict
+  # Container level
+  # https://kubernetes.io/docs/reference/kubernetes-api/core/pod-v1/#SecurityContext
+  containerSecurityContext:
+    runAsNonRoot: true
+    runAsUser: 1000
+    runAsGroup: 1000
+    privileged: false
+    allowPrivilegeEscalation: false
+    readOnlyRootFilesystem: true
+    seccompProfile:
+      type: RuntimeDefault
+    capabilities:
+      drop: ["ALL"]
+      add: []
+  resources:
+    memory: 300Mi
+    cpu: 10m
+
+hub:
+  hub:
+    image:
+      tag: 0.8.7
+
+    replicaCount: 1
+
+    config:
+      environment: "development"
+      logLevel: "debug"
+      apiKey:
+        existingSecret:
+          name: secrets
+          key: apikey
+
+    resources:
+      limits:
+        cpu: 500m
+        memory: 256Mi
+      requests:
+        cpu: 50m
+        memory: 64Mi
+
+    podDisruptionBudget:
+      enabled: false
+
+  externalDatabase:
+    host: "postgres"
+    port: 5432
+    database: "hub"
+    username: "formbricks"
+    existingSecret:
+      name: "postgres-admin"
+      key: "pass"
