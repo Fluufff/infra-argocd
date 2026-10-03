@@ -1,0 +1,7 @@
+domain: badger.fluufff.org
+
+images:
+  badger: ghcr.io/fluufff/badger:latest
+
+platyplus:
+  host: registration.fluufff.org

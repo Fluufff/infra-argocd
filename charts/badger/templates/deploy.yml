@@ -1,0 +1,76 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/name: badger
+  name: badger
+spec:
+  replicas: 1
+  revisionHistoryLimit: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: badger
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: badger
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
+      containers:
+        - name: badger
+          image: "{{ .Values.images.badger }}"
+          securityContext:
+            capabilities:
+              drop: ["ALL"]
+          env:
+            - name: UPLOADS_DIR
+              value: /assets/uploads/9
+            - name: AVATAR_DIR
+              value: /assets/avatars
+            - name: MARIADB_DATABASE
+              value: fluufff
+            - name: MARIADB_HOSTNAME
+              value: platyplus-mariadb.platyplus-main
+          envFrom:
+            - secretRef:
+                name: secrets
+          ports:
+            - containerPort: 3000
+              name: http
+              protocol: TCP
+          volumeMounts:
+            - name: assets
+              mountPath: /assets
+              readOnly: false
+          resources:
+            requests:
+              cpu: 250m
+              memory: 256Mi
+      volumes:
+        - name: assets
+          hostPath:
+            path: /data/platyplus/{{ .Values.platyplus.host }}/assets
+            type: Directory
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: badger
+  creationTimestamp: null
+  labels:
+    app.kubernetes.io/name: badger
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      protocol: TCP
+      targetPort: http
+  selector:
+    app.kubernetes.io/name: badger
