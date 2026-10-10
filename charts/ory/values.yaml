@@ -1,3 +1,5 @@
+domain: account.next.fluufff.org
+
 podSecurityContext: &podSecurityContext
   fsGroup: 1000
   # supplementalGroups: []
@@ -32,9 +34,6 @@ kratos:
     <<: *podSecurityContext
   containerSecurityContext:
     <<: *containerSecurityContext
-  domains:
-    public: auth.next.fluufff.org
-    admin: kratos.next.fluufff.org
 
 selfservice:
   image: oryd/kratos-selfservice-ui-node:v26.2.0
@@ -45,7 +44,6 @@ selfservice:
     <<: *podSecurityContext
   containerSecurityContext:
     <<: *containerSecurityContext
-  domain: account.next.fluufff.org
 
 hydra:
   image: oryd/hydra:v26.2.0
@@ -56,4 +54,3 @@ hydra:
     <<: *podSecurityContext
   containerSecurityContext:
     <<: *containerSecurityContext
-  domain: oauth.next.fluufff.org

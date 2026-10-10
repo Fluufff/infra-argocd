@@ -14,16 +14,16 @@ data:
         same_site: Lax
     serve:
       public:
-        base_url: https://{{ .Values.kratos.domains.public }}
+        base_url: https://{{ .Values.domain }}
         cors:
           enabled: true
       admin:
-        base_url: https://{{ .Values.kratos.domains.admin }}
+        base_url: https://{{ .Values.domain }}
 
     selfservice:
-      default_browser_return_url: https://{{ .Values.selfservice.domain }}
+      default_browser_return_url: https://{{ .Values.domain }}
       allowed_return_urls:
-      - https://{{ .Values.selfservice.domain }}
+      - https://{{ .Values.domain }}
 
       methods:
         password:
@@ -45,19 +45,23 @@ data:
               - email
 
       flows:
+        recovery:
+          ui_url: https://{{ .Values.domain }}/recovery
+        verification:
+          ui_url: https://{{ .Values.domain }}/verification
         error:
-          ui_url: https://{{ .Values.selfservice.domain }}/error
+          ui_url: https://{{ .Values.domain }}/error
         settings:
-          ui_url: https://{{ .Values.selfservice.domain }}/settings
+          ui_url: https://{{ .Values.domain }}/settings
           privileged_session_max_age: 15m
           required_aal: highest_available
         logout:
           after:
-            default_browser_return_url: https://{{ .Values.selfservice.domain }}/logout
+            default_browser_return_url: https://{{ .Values.domain }}/logout
         login:
-          ui_url: https://{{ .Values.selfservice.domain }}/login
+          ui_url: https://{{ .Values.domain }}/login
         registration:
-          ui_url: https://{{ .Values.selfservice.domain }}/registration
+          ui_url: https://{{ .Values.domain }}/registration
           after:
             password:
               hooks:
@@ -71,7 +75,7 @@ data:
       - id: default
         url: file:///etc/kratos/identity.schema.json
     oauth2_provider:
-      url: https://{{ .Values.hydra.domain }}
+      url: https://{{ .Values.domain }}
 
   oidc.google.jsonnet: |
     // Maps Google OIDC claims into Kratos identity traits.
@@ -93,7 +97,6 @@ data:
           picture: claims.picture,
           email_verified: if claims.email_verified == "true" || claims.email_verified == true then true else false,
           google_sub: claims.sub,
-          _raw_claims: claims,
         },
       },
     }

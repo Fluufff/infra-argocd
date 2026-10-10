@@ -58,9 +58,9 @@ spec:
             - name: KRATOS_ADMIN_URL
               value: http://kratos-admin
             - name: KRATOS_BROWSER_URL
-              value: https://{{ .Values.kratos.domains.public }}
+              value: https://{{ .Values.domain }}
             - name: CSRF_COOKIE_NAME
-              value: __HOST-{{ .Values.selfservice.domain }}-x-csrf-token
+              value: __HOST-{{ .Values.domain }}-x-csrf-token
           envFrom:
             - secretRef:
                 name: selfservice-secrets

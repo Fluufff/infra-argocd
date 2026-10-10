@@ -1,0 +1,95 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: account
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: >-
+        Host(`{{ .Values.domain }}`) &&
+        (Path(`/_oauth`) || PathPrefix(`/_oauth/`))
+      middlewares:
+        - name: google-oauth-admin
+          namespace: traefik
+      services:
+        - kind: Service
+          name: google-oauth-admin
+          namespace: traefik
+          port: 80
+    # Kratos Admin API
+    - kind: Rule
+      match: >-
+        Host(`{{ .Values.domain }}`) &&
+        (
+        Path(`/admin/identities`) ||
+        PathPrefix(`/admin/identities/`) ||
+        PathPrefix(`/admin/recovery/`) ||
+        PathPrefix(`/admin/sessions/`)
+        )
+      middlewares:
+        - name: google-oauth-admin
+          namespace: traefik
+      services:
+        - kind: Service
+          name: kratos-admin
+          port: 80
+
+    # Hydra Admin API
+    - kind: Rule
+      match: >-
+        Host(`{{ .Values.domain }}`) &&
+        (
+        Path(`/admin`) ||
+        PathPrefix(`/admin/`)
+        )
+      middlewares:
+        - name: google-oauth-admin
+          namespace: traefik
+      services:
+        - kind: Service
+          name: hydra-admin
+          port: 80
+
+    # Kratos Public API
+    - kind: Rule
+      match: >-
+        Host(`{{ .Values.domain }}`) &&
+        (
+        PathPrefix(`/self-service/`) ||
+        PathPrefix(`/sessions/`) ||
+        Path(`/sessions`) ||
+        PathPrefix(`/identities/`) ||
+        PathPrefix(`/.well-known/ory/`)
+        )
+      services:
+        - kind: Service
+          name: kratos-public
+          port: 80
+
+    # Hydra Public API
+    - kind: Rule
+      match: >-
+        Host(`{{ .Values.domain }}`) &&
+        (
+        PathPrefix(`/oauth2/`) ||
+        Path(`/userinfo`) ||
+        Path(`/credentials`) ||
+        PathPrefix(`/credentials/`) ||
+        Path(`/.well-known/openid-configuration`) ||
+        Path(`/.well-known/oauth-authorization-server`) ||
+        Path(`/.well-known/jwks.json`)
+        )
+      services:
+        - kind: Service
+          name: hydra-public
+          port: 80
+
+    # Selfservice UI (fallback)
+    - kind: Rule
+      match: Host(`{{ .Values.domain }}`)
+      services:
+        - kind: Service
+          name: selfservice
+          port: 80
