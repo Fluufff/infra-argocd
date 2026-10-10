@@ -51,7 +51,7 @@ spec:
               value: "true"
 
             - name: WHITELIST
-              value: juravenator@fluufff.org
+              value: juravenator@fluufff.org,it@fluufff.org
 ---
 apiVersion: "v1"
 kind: "Service"
