@@ -28,5 +28,5 @@ spec:
           name: kratos-admin
           port: 80
       middlewares:
-        - name: google-oauth
+        - name: google-oauth-admin
           namespace: traefik
