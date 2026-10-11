@@ -67,7 +67,7 @@ spec:
         - name: kratos
           image: {{ .Values.kratos.image }}
           command: ["kratos"]
-          args: ["-c", "/etc/kratos/kratos.yml", "serve", "--dev", "--watch-courier"]
+          args: ["-c", "/etc/kratos/kratos.yml", "serve", "--watch-courier"]
           volumeMounts:
             - name: kratos-data
               mountPath: /var/lib/kratos

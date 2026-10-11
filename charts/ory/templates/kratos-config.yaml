@@ -6,12 +6,12 @@ metadata:
 data:
   kratos.yml: |
     cookies:
-      domain: next.fluufff.org
-      same_site: Lax
+      domain: {{ .Values.domain }}
+      same_site: Strict
     session:
       cookie:
-        domain: next.fluufff.org
-        same_site: Lax
+        domain: {{ .Values.domain }}
+        same_site: Strict
     serve:
       public:
         base_url: https://{{ .Values.domain }}
