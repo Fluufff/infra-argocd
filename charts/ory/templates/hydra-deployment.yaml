@@ -1,0 +1,136 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app.kubernetes.io/name: ory
+    app.kubernetes.io/component: hydra
+  name: hydra
+spec:
+  replicas: 1
+  revisionHistoryLimit: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: ory
+      app.kubernetes.io/component: hydra
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app.kubernetes.io/name: ory
+        app.kubernetes.io/component: hydra
+    spec:
+      volumes:
+        - name: hydra-data
+          persistentVolumeClaim:
+            claimName: hydra-data
+        - name: hydra-config
+          configMap:
+            name: hydra-config
+        - name: tmp
+          emptyDir:
+            medium: Memory
+        - name: run
+          emptyDir:
+            medium: Memory
+      hostPID: false
+      hostIPC: false
+      automountServiceAccountToken: false
+      hostNetwork: false
+      securityContext:
+        {{- toYaml .Values.hydra.podSecurityContext | nindent 8 }}
+      initContainers:
+        - name: ensure-db-folder
+          image: {{ .Values.hydra.image }}
+          command: ["mkdir"]
+          args: ["-p", "/var/lib/hydra/sqlite"]
+          securityContext:
+            {{- toYaml .Values.hydra.containerSecurityContext | nindent 12 }}
+          volumeMounts:
+            - name: hydra-data
+              mountPath: /var/lib/hydra
+        - name: migrate
+          image: {{ .Values.hydra.image }}
+          command: ["hydra"]
+          args: ["migrate", "sql", "up", "--read-from-env", "--yes"]
+          securityContext:
+            {{- toYaml .Values.hydra.containerSecurityContext | nindent 12 }}
+          volumeMounts:
+            - name: hydra-data
+              mountPath: /var/lib/hydra
+          env:
+            - name: DSN
+              value: sqlite:///var/lib/hydra/sqlite/db.sqlite?_fk=true&mode=rwc
+      containers:
+        - name: hydra
+          image: {{ .Values.hydra.image }}
+          command: ["hydra"]
+          args: ["-c", "/etc/hydra/hydra.yml", "serve", "all"]
+          volumeMounts:
+            - name: hydra-data
+              mountPath: /var/lib/hydra
+            - name: hydra-config
+              mountPath: /etc/hydra
+            - name: tmp
+              mountPath: /tmp
+            - name: run
+              mountPath: /var/run/hydra
+          env:
+            - name: DSN
+              value: sqlite:///var/lib/hydra/sqlite/db.sqlite?_fk=true&mode=rwc
+          envFrom:
+            - secretRef:
+                name: hydra-secrets
+          securityContext:
+            {{- toYaml .Values.hydra.containerSecurityContext | nindent 12 }}
+          resources:
+            limits:
+              memory: {{ .Values.hydra.resources.memory }}
+            requests:
+              cpu: {{ .Values.hydra.resources.cpu }}
+              memory: {{ .Values.hydra.resources.memory }}
+          ports:
+            - containerPort: 4444
+              name: http-public
+              protocol: TCP
+            - containerPort: 4445
+              name: http-admin
+              protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hydra-public
+  creationTimestamp: null
+  labels:
+    app.kubernetes.io/name: ory
+    app.kubernetes.io/component: hydra
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      protocol: TCP
+      targetPort: http-public
+  selector:
+    app.kubernetes.io/name: ory
+    app.kubernetes.io/component: hydra
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hydra-admin
+  creationTimestamp: null
+  labels:
+    app.kubernetes.io/name: ory
+    app.kubernetes.io/component: hydra
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      protocol: TCP
+      targetPort: http-admin
+  selector:
+    app.kubernetes.io/name: ory
+    app.kubernetes.io/component: hydra

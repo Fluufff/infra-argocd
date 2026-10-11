@@ -1,0 +1,40 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  creationTimestamp: null
+  name: hydra-config
+data:
+  hydra.yml: |
+    log:
+      level: warn
+    serve:
+      cookies:
+        same_site_mode: Strict
+    urls:
+      # Hydra endpoints
+      self:
+        issuer: https://{{ .Values.domain }}/
+        public: https://{{ .Values.domain }}/
+        admin: https://{{ .Values.domain }}/
+      # kratos endpoints
+      identity_provider:
+        url: https://{{ .Values.domain }}
+        publicUrl: https://{{ .Values.domain }}
+      # selfservice endpoints
+      login: https://{{ .Values.domain }}/login
+      registration: https://{{ .Values.domain }}/registration
+      consent: https://{{ .Values.domain }}/consent
+      logout: https://{{ .Values.domain }}/logout
+      device:
+        verification: https://{{ .Values.domain }}/device_verification
+        success: https://{{ .Values.domain }}/device_done
+      error: https://{{ .Values.domain }}/error
+      post_logout_redirect: https://{{ .Values.domain }}/logout-successful
+    ttl:
+      login_consent_request: 1h
+      authentication_session: 1h
+      access_token: 1h
+      refresh_token: 1h
+      id_token: 1h
+      auth_code: 1h
+      device_user_code: 1h
