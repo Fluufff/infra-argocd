@@ -25,6 +25,16 @@ postgres:
   containerSecurityContext:
     <<: *containerSecurityContext
 
+kratos_admin_ui:
+  image: dhiagharsallaoui/kratos-admin-ui:latest
+  resources:
+    cpu: 10m
+    memory: 300Mi
+  podSecurityContext:
+    <<: *podSecurityContext
+  containerSecurityContext:
+    <<: *containerSecurityContext
+
 kratos:
   image: oryd/kratos:v26.2.0
   resources:

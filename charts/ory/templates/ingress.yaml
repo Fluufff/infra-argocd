@@ -1,3 +1,34 @@
+# Strip prefix /foobar and /fiibar
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: strip-ui-prefix
+spec:
+  stripPrefix:
+    prefixes:
+      - /admin/ui
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: ui
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    # Kratos Admin UI
+    - kind: Rule
+      match: >-
+        Host(`kratos-admin.next.fluufff.org`)
+      middlewares:
+        - name: google-oauth-admin
+          namespace: traefik
+        - name: strip-ui-prefix
+      services:
+        - kind: Service
+          name: kratos-admin-ui
+          port: 80
+---
 apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
@@ -18,6 +49,7 @@ spec:
           name: google-oauth-admin
           namespace: traefik
           port: 80
+
     # Kratos Admin API
     - kind: Rule
       match: >-
