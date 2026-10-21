@@ -77,7 +77,7 @@ spec:
       imagePullSecrets:
       - name: ghcr
       containers:
-      - image: ghcr.io/fluufff/platyplus:07-03-2026
+      - image: ghcr.io/fluufff/platyplus:21-10-2026
         name: platyplus
         resources: {}
         env:
