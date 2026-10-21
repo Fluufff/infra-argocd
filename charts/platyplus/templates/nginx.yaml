@@ -194,3 +194,6 @@ spec:
     - kind: Service
       name: platyplus-nginx
       port: 80
+    middlewares:
+      - name: google-oauth-admin
+        namespace: traefik
