@@ -1,5 +1,5 @@
 domain: handbook.fluufff.org
 
 images:
-  bookstack: solidnerd/bookstack:26.5
+  bookstack: solidnerd/bookstack:26.9.2
   mariadb: docker.io/mariadb:12.2.2
