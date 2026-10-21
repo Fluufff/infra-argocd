@@ -7,7 +7,7 @@ data:
     [www]
     user = www-data
     group = www-data
-    listen = 127.0.0.1:9000
+    listen = 0.0.0.0:9000
     pm = dynamic
     pm.max_children = 500
     pm.start_servers = 2
@@ -50,57 +50,57 @@ spec:
         app.kubernetes.io/component: platyplus
     spec:
       volumes:
-      - name: code
-        hostPath:
-          path: /data/platyplus/{{ .Values.codedir }}
-          type: Directory
-      - name: config
-        hostPath:
-          path: /data/platyplus/{{ .Values.host }}/config
-          type: Directory
-      - name: assets
-        hostPath:
-          path: /data/platyplus/{{ .Values.host }}/assets
-          type: Directory
-      - name: php
-        configMap:
-          name: php
-          items:
-          - key: debug.ini
-            path: debug.ini
-      - name: php-fpm
-        configMap:
-          name: php-fpm
-          items:
-          - key: www.conf
-            path: www.conf
-      imagePullSecrets:
-      - name: ghcr
-      containers:
-      - image: ghcr.io/fluufff/platyplus:21-10-2026
-        name: platyplus
-        resources: {}
-        env:
-        - name: CI_ENV
-          value: "production"
-        - name: PHP_OPCACHE_VALIDATE_TIMESTAMPS
-          value: "1"
-        volumeMounts:
         - name: code
-          mountPath: /var/www/html
-          readOnly: false
-        - name: assets
-          mountPath: /var/www/html/assets
-          readOnly: false
+          hostPath:
+            path: /data/platyplus/{{ .Values.codedir }}
+            type: Directory
         - name: config
-          mountPath: /var/www/html/platyplus/config/production
-          readOnly: true
+          hostPath:
+            path: /data/platyplus/{{ .Values.host }}/config
+            type: Directory
+        - name: assets
+          hostPath:
+            path: /data/platyplus/{{ .Values.host }}/assets
+            type: Directory
         - name: php
-          mountPath: /usr/local/etc/php/conf.d/debug.ini
-          subPath: debug.ini
+          configMap:
+            name: php
+            items:
+              - key: debug.ini
+                path: debug.ini
         - name: php-fpm
-          mountPath: /usr/local/etc/php-fpm.d/www.conf
-          subPath: www.conf
+          configMap:
+            name: php-fpm
+            items:
+              - key: www.conf
+                path: www.conf
+      imagePullSecrets:
+        - name: ghcr
+      containers:
+        - image: ghcr.io/fluufff/platyplus:21-10-2026
+          name: platyplus
+          resources: {}
+          env:
+            - name: CI_ENV
+              value: "production"
+            - name: PHP_OPCACHE_VALIDATE_TIMESTAMPS
+              value: "1"
+          volumeMounts:
+            - name: code
+              mountPath: /var/www/html
+              readOnly: false
+            - name: assets
+              mountPath: /var/www/html/assets
+              readOnly: false
+            - name: config
+              mountPath: /var/www/html/platyplus/config/production
+              readOnly: true
+            - name: php
+              mountPath: /usr/local/etc/php/conf.d/debug.ini
+              subPath: debug.ini
+            - name: php-fpm
+              mountPath: /usr/local/etc/php-fpm.d/www.conf
+              subPath: www.conf
 ---
 apiVersion: v1
 kind: Service
@@ -116,8 +116,8 @@ spec:
     app.kubernetes.io/name: platyplus
     app.kubernetes.io/component: platyplus
   ports:
-  - name: http
-    port: 9000
-    protocol: TCP
-    targetPort: 9000
+    - name: http
+      port: 9000
+      protocol: TCP
+      targetPort: 9000
 ---
