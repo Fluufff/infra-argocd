@@ -7,7 +7,7 @@ spec:
   - websecure
   routes:
   - kind: Rule
-    match: Host(`fluufff.be`) || Host(`www.fluufff.be`)
+    match: Host(`fluufff.be`) || Host(`www.fluufff.be`) || Host(`www.fluufff.org`)
     services:
     - kind: Service
       name: nginx-redirect
