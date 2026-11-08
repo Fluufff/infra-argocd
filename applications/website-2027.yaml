@@ -7,7 +7,7 @@ spec:
   project: default
   source:
     repoURL: git@github.com:Fluufff/website-2027.git
-    targetRevision: feat/setup
+    targetRevision: main
     path: helm
     helm:
       releaseName: website-2027
